@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografis Potensi Desa - Kabupaten Tabanan 2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+        .kpi-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #0077B6;
+        }
+        .kpi-label {
+            font-size: 1rem;
+            color: #4A5568;
+            margin-top: 0.5rem;
+        }
+        .chart-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .llm-response-area {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #4A5568;
+            font-style: italic;
+        }
+        .llm-response-content {
+            text-align: left;
+            font-style: normal;
+            line-height: 1.6;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0077B6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md py-6">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold text-[#023E8A]">Potret Potensi Desa Kabupaten Tabanan 2024</h1>
+            <p class="text-lg text-gray-600 mt-2">Visualisasi data kunci dari Statistik Potensi Desa (Podes) 2024 untuk mendukung perencanaan pembangunan yang lebih baik.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="overview" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#0077B6]">Gambaran Umum & Modal Sosial</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-value">133</div>
+                    <div class="kpi-label">Total Desa/Kelurahan</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">10</div>
+                    <div class="kpi-label">Total Kecamatan</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">100%</div>
+                    <div class="kpi-label">Desa dengan Tradisi Gotong Royong</div>
+                </div>
+            </div>
+            <p class="text-center mt-6 text-gray-600 max-w-3xl mx-auto">Kabupaten Tabanan, dengan 133 desa yang tersebar di 10 kecamatan, memiliki fondasi sosial yang sangat kuat. Seluruh desa masih aktif menjalankan tradisi gotong royong, yang menjadi modal sosial tak ternilai untuk pembangunan partisipatif.</p>
+        </section>
+
+        <section id="economy" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#0077B6]">Tulang Punggung Ekonomi Desa</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Sumber Penghasilan Utama Penduduk Desa</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">Mayoritas desa di Tabanan masih bergantung pada sektor agraria sebagai sumber penghidupan utama.</p>
+                    <div class="chart-container">
+                        <canvas id="sumberPenghasilanChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Potensi Ekspor Produk Unggulan Desa</h3>
+                     <p class="text-center text-sm text-gray-500 mb-4">Terdapat kesenjangan signifikan antara desa yang memiliki produk unggulan dengan yang telah berhasil menembus pasar ekspor.</p>
+                    <div class="chart-container">
+                        <canvas id="produkUnggulanChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="infrastructure" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#0077B6]">Infrastruktur & Pelayanan Publik</h2>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Distribusi Sarana Pendidikan per Kecamatan</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">Akses pendidikan dasar (SD) merata, namun ketersediaan fasilitas jenjang menengah (SMP, SMA/SMK) masih terbatas di beberapa wilayah.</p>
+                    <div class="chart-container">
+                        <canvas id="saranaPendidikanChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Ketersediaan Sarana Kesehatan</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">Layanan kesehatan primer cukup tersebar, namun fasilitas rujukan seperti rumah sakit sangat terkonsentrasi di Kecamatan Tabanan.</p>
+                    <div class="chart-container">
+                        <canvas id="saranaKesehatanChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="environment" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#0077B6]">Lingkungan & Kerawanan Bencana</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                 <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Metode Pengelolaan Sampah Rumah Tangga</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">Meskipun sebagian besar sampah diangkut, masih banyak desa yang bergantung pada metode pembakaran/penimbunan yang berisiko bagi lingkungan.</p>
+                    <div class="chart-container">
+                        <canvas id="pengelolaanSampahChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="font-semibold text-xl mb-2 text-center">Kejadian Bencana Alam (2023-2024)</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">Tanah longsor menjadi risiko bencana alam utama di Kabupaten Tabanan, sejalan dengan kondisi topografinya.</p>
+                    <div class="chart-container">
+                        <canvas id="bencanaAlamChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="llm-recommendations" class="mb-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#0077B6]">Rekomendasi Pembangunan ✨</h2>
+            <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">Dapatkan saran strategis untuk pengembangan desa di Kabupaten Tabanan berdasarkan data potensi desa yang ada.</p>
+            <div class="flex justify-center mb-6">
+                <button id="getRecommendationsBtn" class="bg-[#0077B6] hover:bg-[#023E8A] text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                    Dapatkan Rekomendasi ✨
+                </button>
+            </div>
+            <div id="recommendationsOutput" class="llm-response-area">
+                Klik tombol di atas untuk mendapatkan rekomendasi pembangunan.
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>Sumber Data: Publikasi "Statistik Potensi Desa Kabupaten Tabanan 2024" oleh BPS Kabupaten Tabanan.</p>
+            <p class="text-sm mt-2">Infografis ini dibuat untuk tujuan visualisasi dan analisis data.</p>
+        </div>
+    </footer>
+
+<script>
+const tooltipTitleCallback = (tooltipItems) => {
+    const item = tooltipItems[0];
+    let label = item.chart.data.labels[item.dataIndex];
+    if (Array.isArray(label)) {
+        return label.join(' ');
+    }
+    return label;
+};
+
+const wrapLabel = (label, maxWidth = 16) => {
+    if (label.length <= maxWidth) {
+        return label;
+    }
+    const words = label.split(' ');
+    const lines = [];
+    let currentLine = '';
+    words.forEach(word => {
+        if ((currentLine + ' ' + word).trim().length > maxWidth) {
+            lines.push(currentLine.trim());
+            currentLine = word;
+        } else {
+            currentLine = (currentLine + ' ' + word).trim();
+        }
+    });
+    if (currentLine) {
+        lines.push(currentLine.trim());
+    }
+    return lines;
+};
+
+const palette = {
+    blue: '#0077B6',
+    cyan: '#00B4D8',
+    lightCyan: '#90E0EF',
+    green: '#2a9d8f',
+    yellow: '#e9c46a',
+    orange: '#f4a261',
+    red: '#e76f51',
+};
+
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            position: 'bottom',
+        },
+        tooltip: {
+            callbacks: {
+                title: tooltipTitleCallback
+            }
+        }
+    },
+};
+
+const horizontalBarChartOptions = {
+    ...chartOptions,
+    indexAxis: 'y',
+    scales: {
+        x: {
+            beginAtZero: true,
+            ticks: {
+                precision: 0
+            }
+        }
+    }
+};
+
+const stackedBarChartOptions = {
+    ...chartOptions,
+    scales: {
+        x: { stacked: true },
+        y: { stacked: true, beginAtZero: true }
+    }
+};
+
+new Chart(document.getElementById('sumberPenghasilanChart'), {
+    type: 'bar',
+    data: {
+        labels: [
+            wrapLabel('Pertanian, Kehutanan, & Perikanan'), 
+            wrapLabel('Perdagangan & Reparasi'), 
+            wrapLabel('Akomodasi & Makan Minum')
+        ],
+        datasets: [{
+            label: 'Jumlah Desa',
+            data: [107, 12, 7],
+            backgroundColor: [palette.green, palette.blue, palette.orange],
+            borderColor: '#ffffff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        ...chartOptions,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { title: tooltipTitleCallback } }
+        },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+new Chart(document.getElementById('produkUnggulanChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Memiliki Produk, Belum Ekspor', 'Telah Melakukan Ekspor'],
+        datasets: [{
+            data: [35, 5],
+            backgroundColor: [palette.lightCyan, palette.blue],
+            hoverOffset: 4
+        }]
+    },
+    options: chartOptions
+});
+
+new Chart(document.getElementById('saranaPendidikanChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Selemadeg', 'Selemadeg Timur', 'Selemadeg Barat', 'Kerambitan', 'Tabanan', 'Kediri', 'Marga', 'Baturiti', 'Penebel', 'Pupuan'],
+        datasets: [
+            {
+                label: 'SD/MI',
+                data: [10, 10, 11, 15, 12, 15, 16, 12, 18, 14],
+                backgroundColor: palette.green,
+            },
+            {
+                label: 'SMP/MTs',
+                data: [2, 3, 2, 3, 5, 5, 4, 6, 3, 6],
+                backgroundColor: palette.blue,
+            },
+            {
+                label: 'SMA/MA/SMK',
+                data: [1, 1, 0, 2, 5, 4, 2, 3, 1, 1],
+                backgroundColor: palette.orange,
+            }
+        ]
+    },
+    options: stackedBarChartOptions
+});
+
+new Chart(document.getElementById('saranaKesehatanChart'), {
+    type: 'bar',
+    data: {
+        labels: [
+            wrapLabel('Poskesdes'),
+            wrapLabel('Puskesmas Pembantu'),
+            wrapLabel('Praktik Dokter'),
+            wrapLabel('Polindes'),
+            wrapLabel('Apotek'),
+            wrapLabel('Puskesmas'),
+            wrapLabel('Rumah Sakit')
+        ],
+        datasets: [{
+            label: 'Jumlah Fasilitas',
+            data: [91, 75, 68, 62, 44, 20, 7],
+            backgroundColor: [palette.cyan, palette.cyan, palette.cyan, palette.cyan, palette.blue, palette.blue, palette.red],
+            borderColor: '#ffffff',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        ...horizontalBarChartOptions,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { title: tooltipTitleCallback } }
+        }
+    }
+});
+
+new Chart(document.getElementById('pengelolaanSampahChart'), {
+    type: 'pie',
+    data: {
+        labels: [wrapLabel('Diangkut Petugas'), wrapLabel('Ditimbun/Dibakar'), 'Lainnya'],
+        datasets: [{
+            data: [74, 44, 15],
+            backgroundColor: [palette.green, palette.red, palette.yellow],
+            hoverOffset: 4
+        }]
+    },
+    options: chartOptions
+});
+
+new Chart(document.getElementById('bencanaAlamChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Tanah Longsor', 'Banjir', 'Angin Puting Beliung'],
+        datasets: [{
+            label: 'Jumlah Desa Terdampak',
+            data: [29, 8, 8],
+            backgroundColor: [palette.orange, palette.blue, palette.cyan],
+            borderColor: '#ffffff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        ...horizontalBarChartOptions,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { title: tooltipTitleCallback } }
+        }
+    }
+});
+
+document.getElementById('getRecommendationsBtn').addEventListener('click', async () => {
+    const outputDiv = document.getElementById('recommendationsOutput');
+    outputDiv.innerHTML = '<div class="loading-spinner"></div><p class="mt-4">Memuat rekomendasi...</p>';
+    outputDiv.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+    outputDiv.classList.remove('llm-response-content');
+
+    const prompt = `
+    Berdasarkan data potensi desa Kabupaten Tabanan tahun 2024 berikut, berikan rekomendasi pembangunan yang strategis dan actionable.
+
+    Data Kunci:
+    - Total Desa/Kelurahan: 133, Total Kecamatan: 10.
+    - 100% desa memiliki tradisi gotong royong.
+    - Sumber penghasilan utama penduduk desa: Pertanian, Kehutanan, & Perikanan (107 desa), Perdagangan & Reparasi (12 desa), Akomodasi & Makan Minum (7 desa).
+    - Potensi Ekspor Produk Unggulan: 35 desa memiliki produk unggulan, tetapi hanya 5 desa yang telah melakukan ekspor.
+    - Sarana Pendidikan: SD/MI merata, SMP/MTs dan SMA/MA/SMK masih terbatas di beberapa wilayah.
+    - Sarana Kesehatan: Poskesdes (91), Puskesmas Pembantu (75), Praktik Dokter (68), Polindes (62), Apotek (44), Puskesmas (20), Rumah Sakit (7) (terkonsentrasi di Kecamatan Tabanan).
+    - Pengelolaan Sampah Rumah Tangga: 74 desa diangkut petugas, 44 desa ditimbun/dibakar, 15 desa lainnya.
+    - Kejadian Bencana Alam (2023-2024): Tanah Longsor (29 desa), Banjir (8 desa), Angin Puting Beliung (8 desa).
+
+    Berikan rekomendasi dalam poin-poin yang jelas dan ringkas, mencakup aspek ekonomi, sosial, infrastruktur, dan lingkungan.
+    `;
+
+    try {
+        let chatHistory = [];
+        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+        const payload = { contents: chatHistory };
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const text = result.candidates[0].content.parts[0].text;
+            outputDiv.innerHTML = `<div class="llm-response-content">${text.replace(/\n/g, '<br>')}</div>`;
+            outputDiv.classList.remove('flex', 'flex-col', 'items-center', 'justify-center');
+            outputDiv.classList.add('llm-response-content');
+        } else {
+            outputDiv.innerHTML = '<p class="text-red-500">Gagal mendapatkan rekomendasi. Silakan coba lagi.</p>';
+            outputDiv.classList.remove('llm-response-content');
+            outputDiv.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+        }
+    } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        outputDiv.innerHTML = '<p class="text-red-500">Terjadi kesalahan saat memuat rekomendasi. Silakan coba lagi.</p>';
+        outputDiv.classList.remove('llm-response-content');
+        outputDiv.classList.add('flex', 'flex-col', 'items-center', 'justify-center');
+    }
+});
+</script>
+
+</body>
+</html>
